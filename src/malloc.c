@@ -24,7 +24,7 @@ void *malloc(size_t size)
     size_t s = align_power2(size + BLOCK_SIZE) - BLOCK_SIZE;
 
     if (base) {
-        ptr = find_block(&last, s);
+        ptr = find_best_match(&last, s);
         if (ptr) { // Have an available block
             if ((ptr->size - s) >= MIN_CHUNK_SIZE)
                 split_block(ptr, s);
@@ -44,7 +44,7 @@ void *malloc(size_t size)
     return (ptr->data);
 }
 
-block_t *find_block(block_t **last, size_t size)
+block_t *find_best_match(block_t **last, size_t size)
 {
     block_t *ptr = base;
     block_t *best_ptr = NULL;
