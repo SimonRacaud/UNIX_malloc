@@ -12,8 +12,10 @@
 
 #include "my_malloc.h"
 
-void *base = NULL;
-const size_t MIN_DATA_SIZE = 1;
+extern const size_t BLOCK_SIZE;
+extern void *base;
+extern const size_t MIN_DATA_SIZE;
+extern const void *SBRK_ERROR;
 
 void *malloc(size_t size)
 {
@@ -24,7 +26,7 @@ void *malloc(size_t size)
     if (base) {
         ptr = find_block(&last, s);
         if (ptr) { // Have an available block
-            if ((ptr->size - s) >= align_power2(BLOCK_SIZE + MIN_DATA_SIZE))
+            if ((ptr->size - s) >= MIN_CHUNK_SIZE)
                 split_block(ptr, s);
             ptr->is_free = 0;
         } else {
@@ -53,30 +55,41 @@ block_t *find_block(block_t **last, size_t size)
     return ptr;
 }
 
-block_t *extend_heap(block_t *last, size_t s)
+block_t *extend_heap(block_t *last, size_t data_size)
 {
     block_t *ptr = sbrk(0);
+    size_t size_jump = highestMultipleofx(BLOCK_SIZE + data_size, HEAP_ALIGN);
 
-    if (sbrk(BLOCK_SIZE + s) == SBRK_ERROR) {
+    if (sbrk(size_jump) == SBRK_ERROR) {
         return NULL;
-    }    
-    ptr->size = s;
+    }
+    ptr->size = (size_jump - BLOCK_SIZE);
     ptr->next = NULL;
-    if (last)
+    if (last) {
         last->next = ptr;
+    }
     ptr->prev = last;
     ptr->is_free = 0;
+    if ((size_jump - (BLOCK_SIZE + data_size)) >= MIN_CHUNK_SIZE) {
+        split_block(ptr, data_size);
+    }
     return ptr;
 }
 
-void split_block(block_t *ptr, size_t s)
+void split_block(block_t *ptr, size_t new_size)
 {
-    block_t *new = (block_t *)(ptr->data + s);
+    size_t available_size = ptr->size - new_size;
+    size_t new_block_size = highestPowerof2(available_size);
+    block_t *new;
 
-    new->size = ptr->size - s - BLOCK_SIZE;
+    new = (block_t *)(ptr->data + new_size);
+    new->size = available_size - BLOCK_SIZE;
     new->next = ptr->next;
     new->prev = ptr;
     new->is_free = 1;
-    ptr->size = s;
+    ptr->size = new_size;
     ptr->next = new;
+    if (available_size - new_block_size > 0) {
+        split_block(new, (new_block_size - BLOCK_SIZE));
+    }
 }
