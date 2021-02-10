@@ -47,12 +47,20 @@ void *malloc(size_t size)
 block_t *find_block(block_t **last, size_t size)
 {
     block_t *ptr = base;
+    block_t *best_ptr = NULL;
 
-    while (ptr && !(ptr->is_free && ptr->size >= size)) {
+    while (ptr) {
+        if (IS_COMPLIANT_CHUNK(ptr)) {
+            if (best_ptr == NULL) {
+                best_ptr = ptr;
+            } else if (best_ptr->size > ptr->size) {
+                best_ptr = ptr;
+            }
+        }
         *last = ptr;
         ptr = ptr->next;
     }
-    return ptr;
+    return best_ptr;
 }
 
 block_t *extend_heap(block_t *last, size_t data_size)
