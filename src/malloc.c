@@ -12,45 +12,36 @@
 
 #include "my_malloc.h"
 
+extern void *head;
+extern block_t *end;
 extern const size_t BLOCK_SIZE;
-extern void *base;
 extern const size_t MIN_DATA_SIZE;
 extern const void *SBRK_ERROR;
 
-void *malloc(size_t size)
+static block_t *set_new_block(size_t s, block_t *last)
 {
     block_t *ptr;
-    block_t *last = base;
-    size_t s = align_power2(size + BLOCK_SIZE) - BLOCK_SIZE;
 
-    if (base) {
-        ptr = find_best_match(&last, s);
-        if (ptr) { // Have an available block
-            if ((ptr->size - s) >= MIN_CHUNK_SIZE)
-                split_block(ptr, s);
-            ptr->is_free = 0;
-        } else {
-            ptr = extend_heap(last, s);
-            if (!ptr)
-                return NULL;
-        }
+    ptr = find_best_match(&last, s);
+    if (ptr) {
+        if ((ptr->size - s) >= MIN_CHUNK_SIZE)
+            split_block(ptr, s);
+        ptr->is_free = 0;
     } else {
-        // Its the first alloc of the processus
-        ptr = extend_heap(NULL, s);
+        ptr = extend_heap(last, s);
         if (!ptr)
             return NULL;
-        base = ptr;
     }
-    return (ptr->data);
+    return ptr;
 }
 
 block_t *find_best_match(block_t **last, size_t size)
 {
-    block_t *ptr = base;
+    block_t *ptr = head;
     block_t *best_ptr = NULL;
 
     while (ptr) {
-        if (IS_COMPLIANT_CHUNK(ptr)) {
+        if (ptr->is_free && ptr->size >= size) {
             if (best_ptr == NULL) {
                 best_ptr = ptr;
             } else if (best_ptr->size > ptr->size) {
@@ -59,6 +50,9 @@ block_t *find_best_match(block_t **last, size_t size)
         }
         *last = ptr;
         ptr = ptr->next;
+    }
+    if (best_ptr && !best_ptr->is_free) {
+        return NULL;
     }
     return best_ptr;
 }
@@ -73,31 +67,37 @@ block_t *extend_heap(block_t *last, size_t data_size)
     }
     ptr->size = (size_jump - BLOCK_SIZE);
     ptr->next = NULL;
+    ptr->next_free = NULL;
     if (last) {
         last->next = ptr;
     }
     ptr->prev = last;
     ptr->is_free = 0;
+    end = ptr;
+    //printf("1 CREATE BLOCK : s(%lu) (%u)\n\n", ptr->size, ptr->is_free);
     if ((size_jump - (BLOCK_SIZE + data_size)) >= MIN_CHUNK_SIZE) {
         split_block(ptr, data_size);
     }
     return ptr;
 }
 
-void split_block(block_t *ptr, size_t new_size)
+void *malloc(size_t size)
 {
-    size_t available_size = ptr->size - new_size;
-    size_t new_block_size = highestPowerof2(available_size);
-    block_t *new;
+    printf("MALLOC\n");
+    block_t *ptr;
+    block_t *last = head;
+    size_t s = align_power2(size + BLOCK_SIZE) - BLOCK_SIZE;
 
-    new = (block_t *)(ptr->data + new_size);
-    new->size = available_size - BLOCK_SIZE;
-    new->next = ptr->next;
-    new->prev = ptr;
-    new->is_free = 1;
-    ptr->size = new_size;
-    ptr->next = new;
-    if (available_size - new_block_size > 0) {
-        split_block(new, (new_block_size - BLOCK_SIZE));
+    if (size == 0)
+        return NULL;
+    if (head) {
+        ptr = set_new_block(s, last);
+    } else {
+        ptr = extend_heap(NULL, s);
+        if (!ptr)
+            return NULL;
+        head = ptr;
     }
+    return (ptr->data);
 }
+

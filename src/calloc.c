@@ -14,8 +14,13 @@
 
 void *calloc(size_t number, size_t size)
 {
-    size_t *new = malloc(number * size);
+    size_t *new;
+    size_t total_size = number * size;
 
+    if (!number || !size || (number != 0 && total_size / number != size)) {
+        return NULL;
+    }
+    new = malloc(number * size);
     if (new) {
         for (size_t i = 0; i < (number * size); i++) {
             new[i] = 0;

@@ -12,11 +12,17 @@
 
 #include "my_malloc.h"
 
-void *base = NULL;
+void *head = NULL;
+block_t *end = NULL;
+
+void *getHead()
+{
+    return head;
+}
 
 const size_t MIN_DATA_SIZE = 1;
 
-const size_t BLOCK_SIZE = sizeof(size_t) + (sizeof(block_t *) * 2)
+const size_t BLOCK_SIZE = sizeof(size_t) + (sizeof(block_t *) * 3)
     + sizeof(__uint8_t);
 
 const void *SBRK_ERROR = (void *)(-1);

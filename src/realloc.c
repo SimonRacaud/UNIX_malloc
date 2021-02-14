@@ -15,6 +15,12 @@
 
 void *realloc(void *ptr, size_t size)
 {
+    if (!ptr) {
+        return malloc(size);
+    } else if (ptr && size == 0) {
+        free(ptr);
+        return NULL;
+    }
     void *new = malloc(size);
     block_t *ptr_meta = get_meta_block(ptr);
 
@@ -27,5 +33,10 @@ void *realloc(void *ptr, size_t size)
 
 void *reallocarray(void *ptr, size_t nmemb, size_t size)
 {
-    return realloc(ptr, nmemb * size);
+    size_t total_size = nmemb * size;
+
+    if (!nmemb || !size || (nmemb != 0 && total_size / nmemb != size)) {
+        return NULL;
+    }
+    return realloc(ptr, total_size);
 }
