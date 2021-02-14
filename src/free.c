@@ -123,26 +123,22 @@ void try_move_break(void)
             brk(ptr);
             full_size_count = 0;
         }
-        //printf("BR %lu > %lu %d %lu \n", full_size_count, HEAP_ALIGN, ptr->prev->is_free, ptr->prev->size);
+        printf("BR %lu > %lu %d %lu \n", full_size_count, HEAP_ALIGN, ptr->prev->is_free, ptr->prev->size);
         if (full_size_count > HEAP_ALIGN && ptr->prev) {
             available_size = full_size_count - HEAP_ALIGN;
             available_size_power2 = highestPowerof2(available_size);
-            //printf("BREAK: av(%lu) av2(%lu) / %d \n", available_size, available_size_power2, can_split_block(available_size));
-            if (available_size_power2 == available_size
-                && available_size_power2 > MIN_CHUNK_SIZE) {
-                //printf("MOVE & BREAK %lu \n", ptr->size);
-                ptr->size = available_size;
-                full_size_count = available_size;
-                brk(ptr + (available_size - BLOCK_SIZE));
-            } else if (can_split_block(available_size)) {
-                ptr->size = available_size;
+            printf("BREAK: full(%lu) \n", full_size_count);
+            printf("BREAK: av(%lu) av2(%lu) / %d \n", available_size, available_size_power2, can_split_block(available_size));
+            ptr->size = available_size;
+            ptr->next = NULL;
+            if (available_size_power2 != available_size && can_split_block(available_size)) {
                 split_block(ptr, highestPowerof2(available_size + BLOCK_SIZE) - BLOCK_SIZE);
-                brk(ptr + (available_size - BLOCK_SIZE));
-                full_size_count = available_size;
-                //printf("SPLIT & BREAK %lu \n", ptr->size);
-                //printf("FREE E %lu \n", (full_size_count - HEAP_ALIGN));
-                //printf("XXX %lu \n", ptr->size);
             }
+            brk(ptr + (available_size - BLOCK_SIZE));
+            full_size_count = available_size;
+            printf("SPLIT & BREAK %lu \n", ptr->size);
+            //printf("FREE E %lu \n", (full_size_count - HEAP_ALIGN));
+            //printf("XXX %lu \n", ptr->size);
         }
     }
 }
