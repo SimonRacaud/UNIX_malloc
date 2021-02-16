@@ -1,14 +1,9 @@
 /*
- * File: calloc.c
- * Project: src
- * File Created: Thursday, 1st January 1970 1:00:00 am
- * Author: simon (simon.racaud@epitech.eu)
- * -----
- * Last Modified: Tuesday, 9th February 2021 9:55:18 pm
- * Modified By: simon (simon.racaud@epitech.eu>)
- * -----
- * Copyright 2021 - 2021 TEK2, Epitech
- */
+** EPITECH PROJECT, 2021
+** src
+** File description:
+** calloc.c, Thursday, 1st January 1970 1:00:00 am simon.racaud@epitech.eu
+*/
 
 #include "my_malloc.h"
 
@@ -22,9 +17,7 @@ void *calloc(size_t number, size_t size)
     }
     new = malloc(number * size);
     if (new) {
-        for (size_t i = 0; i < (number * size); i++) {
-            new[i] = 0;
-        }
+        memset(new, 0, total_size);
     }
     return new;
 }

@@ -8,14 +8,18 @@
 DSRC	= ./src/
 CC 		= gcc
 
-SRC_MAIN = 	$(DSRC)malloc.c		\
-			$(DSRC)tools.c		\
-			$(DSRC)env.c		\
-			$(DSRC)free.c		\
-			$(DSRC)calloc.c		\
-			$(DSRC)realloc.c	\
-
-SRC	=	$(SRC_MAIN)
+SRC =	 	$(DSRC)realloc.c		\
+			$(DSRC)malloc.c			\
+			$(DSRC)free.c			\
+			$(DSRC)calloc.c			\
+			$(DSRC)math.c			\
+			$(DSRC)env.c			\
+			$(DSRC)list/split_block.c	\
+			$(DSRC)list/create.c		\
+			$(DSRC)list/find.c			\
+			$(DSRC)list/fusion.c		\
+			$(DSRC)list/move_break.c	\
+			$(DSRC)list/utility.c		\
 
 SRC_UT = ./tests/tests_malloc.c \
 		$(SRC_MAIN)
@@ -25,14 +29,15 @@ OBJ	=	$(SRC:.c=.o)
 NAME	=	libmy_malloc.so
 NAME_TEST = test_malloc.out
 
-CFLAGS		+= -fPIC -W -Wall -Wextra $(INCLUDE) #-Werror
-GDB_FLAG 	+= -g3
+CFLAGS		+= -fPIC -W -Wall -Wextra $(INCLUDE) $(DEBUG) #-Werror
+CXXFLAGS    += $(DEBUG)
+DEBUG 	= -g 
 INCLUDE = -I./includes
 
 all:  $(NAME)
 
 $(NAME): $(OBJ)
-	@$(CC) -o $(NAME) $(OBJ) -lm -lpthread -shared && \
+	@$(CC) -o $(NAME) $(OBJ) -lm -shared && \
 		$(ECHO) $(BOLD_T)$(GREEN_C)"\n[✔] COMPILED:" $(DEFAULT)$(LIGHT_GREEN) "$(NAME)\n"$(DEFAULT) || \
 		$(ECHO) $(BOLD_T)$(RED_C)"[✘] "$(UNDLN_T)"BUILD FAILED:" $(LIGHT_RED) "$(NAME)\n"$(DEFAULT)
 
@@ -50,8 +55,7 @@ reall:	fclean all
 
 tests_run: $(NAME)
 	@gcc -o $(NAME_TEST) $(SRC_UT) $(INCLUDE) -lcriterion --coverage -lm -ldl \
-		&& LD_PRELOAD=./$(NAME) \
-		&& ./$(NAME_TEST)		\
+		&& LD_PRELOAD=./$(NAME) ./$(NAME_TEST)		\
 		&& rm -f $(NAME_TEST)
 
 .PHONY :        clean fclean re

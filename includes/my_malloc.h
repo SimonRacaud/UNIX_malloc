@@ -17,35 +17,53 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 typedef struct block
 {
-    size_t size;
-    struct block *next;
-    struct block *prev;
-    __uint8_t is_free;
-    char data[1];
-} block_t;
+    size_t size;            
+    struct block *next;     
+    struct block *prev;     
+    __uint8_t is_free;      
+    char data[1];           
+} __attribute__((packed)) block_t;
 
-#define HEAP_ALIGN (getpagesize() * 2)
-#define MIN_CHUNK_SIZE align_power2(BLOCK_SIZE + MIN_DATA_SIZE)
-#define IS_COMPLIANT_CHUNK(c) (c->is_free && c->size >= size)
+#define MIN_CHUNK_SIZE highter_pow2(BLOCK_SIZE + MIN_DATA_SIZE)
+#define HEAP_ALIGN (size_t)(getpagesize() * 2)
 
-// TOOLS
-size_t align_power2(size_t v);
-size_t highestPowerof2(size_t n);
-size_t highestMultipleofx(size_t n, size_t x);
+// MATH
+size_t highter_pow2(size_t v);
+size_t lower_pow2(size_t n);
+size_t highest_multiple_of_x(size_t n, size_t x);
+size_t lower_multiple_of_x(size_t nb, size_t x);
 
-// MALLOC
+// List
+void *listHead(void *value);
+void *listEnd(block_t *value);
+
+block_t *add_block(size_t size);
+block_t *extend_heap(block_t *last, size_t size);
+
 block_t *find_best_match(block_t **last, size_t size);
-block_t *extend_heap(block_t *last, size_t s);
+block_t *get_first_prev_free_block(block_t *current, size_t *full_size);
+
 void split_block(block_t *ptr, size_t s);
+bool is_block_splitable(size_t free_size);
+size_t nb_block_if_splitted(size_t free_size);
+
+block_t *get_meta_block(void *addr);
+bool is_valid_addr(void *data_addr);
+
+block_t *fusion_free_blocks(block_t *beg);
+
+void try_move_break(void);
+
+// C/MALLOC
 void *malloc(size_t size);
+void *calloc(size_t number, size_t size);
 
 // FREE
 void free(void *addr);
-block_t *get_meta_block(void *addr);
-bool is_valid_addr(void *data_addr);
 
 // REALLOC
 void *realloc(void *ptr, size_t size);
