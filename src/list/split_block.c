@@ -16,12 +16,10 @@ void split_block(block_t *ptr, size_t ptr_new_size)
     size_t new_block_futur_size = lower_pow2(free_size);
     block_t *new;
     
-    //printf("> av %lu - nbs %lu - ns %lu \n", free_size, new_block_futur_size, ptr_new_size); // DEBUG
     if (free_size - BLOCK_SIZE <= 0 || free_size < MIN_CHUNK_SIZE)
         return;
     new = (block_t *)(ptr->data + ptr_new_size);
     new->size = free_size - BLOCK_SIZE;
-    //printf("HH %lu \n", MIN_CHUNK_SIZE); // DEBUG
     new->next = ptr->next;
     if (new->next == NULL)
         listEnd(new);

@@ -24,5 +24,7 @@ void *malloc(size_t size)
             return NULL;
         listHead(ptr);
     }
+    if (ptr == NULL)
+        return NULL;
     return (ptr->data);
 }

@@ -12,7 +12,7 @@ void *realloc(void *ptr, size_t size)
 {
     void *new;
     block_t *ptr_meta;
-    size_t *copy_size;
+    size_t copy_size;
 
     if (!ptr) {
         return malloc(size);
@@ -24,8 +24,8 @@ void *realloc(void *ptr, size_t size)
     if (new == NULL)
         return NULL;
     ptr_meta = get_meta_block(ptr);
-    copy_size = (ptr_meta->size > size) ? size : ptr_meta->size;
-    new = memcpy(new, ptr, copy_size);
+    copy_size = (size < ptr_meta->size) ? size : ptr_meta->size;
+    new = memcpy(new, ptr, copy_size);    
     free(ptr);
     return new;
 }
