@@ -16,6 +16,8 @@ size_t nb_splitted_block, block_t *last_free_block)
     beg->next = last_free_block->next;
     if (beg->next) {
         beg->next->prev = beg;
+    } else {
+        listEnd(beg);
     }
     if (nb_splitted_block > 1) {
         split_block(beg, lower_pow2(beg->size + BLOCK_SIZE) - BLOCK_SIZE);
