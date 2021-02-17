@@ -7,18 +7,16 @@
 
 #include "my_malloc.h"
 
-extern const size_t BLOCK_SIZE;
+extern const size_t META_SIZE;
 
 void *malloc(size_t size)
 {
     block_t *ptr;
-    size_t s = highter_pow2(size + BLOCK_SIZE) - BLOCK_SIZE;
+    size_t s = highter_pow2(size + META_SIZE) - META_SIZE;
 
     //setvbuf(stdout, NULL, _IONBF, 0);
     //printf("MALLOC %lu\n", size);
     //my_debugDisplay();
-    if (size == 0)
-        return NULL;
     if (listHead(NULL)) {
         ptr = add_block(s);
     } else {
@@ -29,8 +27,7 @@ void *malloc(size_t size)
     }
     //printf("END MALLOC ptr->size = %lu\n", ptr ? ptr->size : 0);
     //my_debugDisplay();
-
     if (ptr == NULL)
         return NULL;
-    return (ptr->data);
+    return (void *)ptr + META_SIZE;
 }

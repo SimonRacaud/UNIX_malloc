@@ -7,11 +7,11 @@
 
 #include "my_malloc.h"
 
-extern const size_t BLOCK_SIZE;
+extern const size_t META_SIZE;
 
 block_t *get_meta_block(void *addr)
 {
-    return (block_t *)((char *)addr - BLOCK_SIZE);
+    return (block_t *)((char *)addr - META_SIZE);
 }
 
 bool is_valid_addr(void *data_addr)
@@ -20,7 +20,8 @@ bool is_valid_addr(void *data_addr)
 
     if (data_addr && head) {
         if (data_addr >= head && data_addr < sbrk(0)) {
-            return (data_addr == get_meta_block(data_addr)->data);
+            return (data_addr == 
+                (void *)get_meta_block(data_addr) + META_SIZE);
         }
     }
     return false;

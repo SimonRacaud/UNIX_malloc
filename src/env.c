@@ -35,9 +35,6 @@ size_t heap_align(void)
     return align;
 }
 
-const size_t MIN_DATA_SIZE = 1;
-
-const size_t BLOCK_SIZE = sizeof(size_t) + (sizeof(block_t *) * 2)
-    + sizeof(__uint8_t);
+const size_t META_SIZE = sizeof(block_t);
 
 const void *SBRK_ERROR = (void *)(-1);

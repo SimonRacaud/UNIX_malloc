@@ -21,14 +21,14 @@
 
 typedef struct block
 {
-    size_t size;            
+    size_t size;           
     struct block *next;     
-    struct block *prev;     
-    __uint8_t is_free;      
-    char data[1];           
-} __attribute__((packed)) block_t;
+    struct block *prev;   
+    __uint8_t is_free;
+} block_t;
 
-#define MIN_CHUNK_SIZE highter_pow2(BLOCK_SIZE + MIN_DATA_SIZE)
+#define MIN_CHUNK_SIZE META_SIZE
+#define DATA(meta_ptr) (void *)meta_ptr + META_SIZE
 
 // MATH
 size_t highter_pow2(size_t v);

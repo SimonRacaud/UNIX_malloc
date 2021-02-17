@@ -8,7 +8,7 @@
 #include "my_malloc.h"
 
 //////////////////////////////////////////////
-extern const size_t BLOCK_SIZE;
+extern const size_t META_SIZE;
 void my_debugDisplay() // TEMP
 {
     setvbuf(stdout, NULL, _IONBF, 0);
@@ -17,7 +17,7 @@ void my_debugDisplay() // TEMP
     
     printf("\nDEBUG %p\n", listHead(NULL));
     for (block_t *ptr = meta; ptr != NULL; ptr = ptr->next) {
-        printf("\tBlock %lu: s(%lu) ss(%lu) is_free(%d)\n", i, ptr->size, ptr->size + BLOCK_SIZE, ptr->is_free);
+        printf("\tBlock %lu: s(%lu) ss(%lu) is_free(%d)\n", i, ptr->size, ptr->size + META_SIZE, ptr->is_free);
         i++;
     }
 }
@@ -30,7 +30,7 @@ void my_debugDisplayRev() // TEMP
     
     printf("\nDEBUG %p\n", listEnd(NULL));
     for (block_t *ptr = meta; ptr != NULL; ptr = ptr->prev) {
-        printf("\tBlock %lu: s(%lu) ss(%lu) is_free(%d)\n", i, ptr->size, ptr->size + BLOCK_SIZE, ptr->is_free);
+        printf("\tBlock %lu: s(%lu) ss(%lu) is_free(%d)\n", i, ptr->size, ptr->size + META_SIZE, ptr->is_free);
         i++;
         //if (i > 20) break;
     }

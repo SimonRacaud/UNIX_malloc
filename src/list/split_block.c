@@ -7,8 +7,7 @@
 
 #include "my_malloc.h"
 
-extern const size_t BLOCK_SIZE;
-extern const size_t MIN_DATA_SIZE;
+extern const size_t META_SIZE;
 
 void split_block(block_t *ptr, size_t ptr_new_size)
 {
@@ -16,15 +15,15 @@ void split_block(block_t *ptr, size_t ptr_new_size)
     size_t new_block_futur_size = lower_pow2(free_size);
     block_t *new;
     
-    setvbuf(stdout, NULL, _IONBF, 0); // DEBUG
-    if ((ssize_t)free_size - (ssize_t)BLOCK_SIZE <= 0
+    //setvbuf(stdout, NULL, _IONBF, 0); // DEBUG
+    if ((ssize_t)free_size - (ssize_t)META_SIZE <= 0
     || free_size < MIN_CHUNK_SIZE)
         return;
-    new = (block_t *)(ptr->data + ptr_new_size);
-    new->size = free_size - BLOCK_SIZE;
+    new = (block_t *)(DATA(ptr) + ptr_new_size);
+    new->size = free_size - META_SIZE;
     new->next = ptr->next;
     //printf("SPLIT f %lu / pns %lu / ps %lu \n", free_size, ptr_new_size, ptr->size); // DEBUG
-    //printf("SPLIT ptr s %lu / next s %lu \n", new->size + BLOCK_SIZE, (new_block_futur_size)); // DEBUG
+    //printf("SPLIT ptr s %lu / next s %lu \n", new->size + META_SIZE, (new_block_futur_size)); // DEBUG
     if (new->next == NULL)
         listEnd(new);
     else
@@ -34,7 +33,7 @@ void split_block(block_t *ptr, size_t ptr_new_size)
     ptr->size = ptr_new_size;
     ptr->next = new;
     if (free_size - new_block_futur_size >= MIN_CHUNK_SIZE) {
-        split_block(new, (new_block_futur_size - BLOCK_SIZE));
+        split_block(new, (new_block_futur_size - META_SIZE));
     }
 }
 

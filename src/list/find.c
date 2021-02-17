@@ -7,7 +7,7 @@
 
 #include "my_malloc.h"
 
-extern const size_t BLOCK_SIZE;
+extern const size_t META_SIZE;
 
 block_t *find_best_match(block_t **last, size_t size)
 {
@@ -36,7 +36,7 @@ block_t *get_first_prev_free_block(block_t *current, size_t *full_size)
     block_t *prev;
 
     if (full_size && current && current->is_free) {
-        *full_size += current->size + BLOCK_SIZE;
+        *full_size += current->size + META_SIZE;
     }
     if (current && current->prev && current->prev->is_free) {
         prev = get_first_prev_free_block(current->prev, full_size);

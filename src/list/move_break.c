@@ -7,8 +7,7 @@
 
 #include "my_malloc.h"
 
-extern const size_t BLOCK_SIZE;
-extern const size_t MIN_DATA_SIZE;
+extern const size_t META_SIZE;
 
 static bool move_break_and_split(size_t full_size, block_t *ptr)
 {
@@ -22,14 +21,14 @@ static bool move_break_and_split(size_t full_size, block_t *ptr)
     //printf("BREAK: full(%lu) \n", full_size);
     //printf("BREAK: move size (%lu) \n", full_size - free_size);
     //printf("BREAK: av(%lu) av2(%lu) / %d \n", free_size, free_size_pow2, is_block_splitable(free_size));
-    ptr->size = free_size - BLOCK_SIZE;
+    ptr->size = free_size - META_SIZE;
     ptr->next = NULL;
     listEnd(ptr);
     if (free_size_pow2 != (size_t)free_size) {
         //printf("f %lu / free_size: %lu + full_size: %lu \n",  lower_pow2(free_size), free_size, full_size);
-        split_block(ptr, lower_pow2(free_size) - BLOCK_SIZE);
+        split_block(ptr, lower_pow2(free_size) - META_SIZE);
     }
-    brk(ptr + (ptr->size + BLOCK_SIZE));
+    brk(ptr + (ptr->size + META_SIZE));
     //printf("SPLIT & BREAK %lu / full %lu \n", ptr->size, full_size);
     //printf("FREE E %lu \n", (full_size - heap_align()));
     //printf("XXX %lu \n", ptr->size);
@@ -53,7 +52,7 @@ void try_move_break(void)
     block_t *first_free_block = get_first_prev_free_block(listEnd(NULL), &free_size);
 
     //if (first_free_block)
-    //   printf("MOVE %lu \n", first_free_block->size + BLOCK_SIZE);
+    //   printf("MOVE %lu \n", first_free_block->size + META_SIZE);
     
     if (!first_free_block || free_size < heap_align())
         return;
@@ -67,7 +66,7 @@ void try_move_break(void)
         && move_break_and_split(free_size, ptr)) {
             break;
         }
-        free_size -= ptr->size + BLOCK_SIZE;
+        free_size -= ptr->size + META_SIZE;
     }
     //printf("END MOVE BREAK %lu  \n", free_size);
 

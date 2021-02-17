@@ -8,16 +8,16 @@
 #include <string.h>
 #include "my_malloc.h"
 
-extern const size_t BLOCK_SIZE;
+extern const size_t META_SIZE;
 
 static bool have_enough_space_next(block_t *ptr, size_t needed_space)
 {
-    size_t free_space = ptr->size + BLOCK_SIZE;
+    size_t free_space = ptr->size + META_SIZE;
     for (block_t *p = ptr->next; p && p->is_free; p = p->next) {
-        free_space += p->size + BLOCK_SIZE;
+        free_space += p->size + META_SIZE;
     }
     //fprintf(stderr, "> %lu %lu \n", free_space, lower_pow2(free_space));
-    if (lower_pow2(free_space) - BLOCK_SIZE >= needed_space) {
+    if (lower_pow2(free_space) - META_SIZE >= needed_space) {
         return true;
     }
     return false;
@@ -25,19 +25,19 @@ static bool have_enough_space_next(block_t *ptr, size_t needed_space)
 
 static void *unchanged_size_alloc(block_t *ptr_meta, void *ptr, size_t size)
 {
-    if (ptr_meta->size + BLOCK_SIZE == highter_pow2(size + BLOCK_SIZE))
+    if (ptr_meta->size + META_SIZE == highter_pow2(size + META_SIZE))
         return ptr;
     return NULL;
 }
 
 static void *lower_size_split(block_t *ptr_meta, void *ptr, size_t size)
 {
-    if (lower_pow2(ptr_meta->size + BLOCK_SIZE - 1) > highter_pow2(size + BLOCK_SIZE)
-    && is_block_splitable(ptr_meta->size + BLOCK_SIZE)) {
+    if (lower_pow2(ptr_meta->size + META_SIZE - 1) > highter_pow2(size + META_SIZE)
+    && is_block_splitable(ptr_meta->size + META_SIZE)) {
         //my_debugDisplayRev();
-        //printf("## %lu %lu \n", highter_pow2(size + BLOCK_SIZE), lower_pow2(ptr_meta->size + BLOCK_SIZE - 1) );
+        //printf("## %lu %lu \n", highter_pow2(size + META_SIZE), lower_pow2(ptr_meta->size + META_SIZE - 1) );
 
-        split_block(ptr_meta, highter_pow2(size + BLOCK_SIZE) - BLOCK_SIZE);
+        split_block(ptr_meta, highter_pow2(size + META_SIZE) - META_SIZE);
         return ptr;
     }
     return NULL;
