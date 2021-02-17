@@ -38,7 +38,7 @@ block_t *get_first_prev_free_block(block_t *current, size_t *full_size)
     if (full_size && current && current->is_free) {
         *full_size += current->size + BLOCK_SIZE;
     }
-    if (current->prev && current->prev->is_free) {
+    if (current && current->prev && current->prev->is_free) {
         prev = get_first_prev_free_block(current->prev, full_size);
         if (prev == NULL) {
             return current;
@@ -46,5 +46,7 @@ block_t *get_first_prev_free_block(block_t *current, size_t *full_size)
             return prev;
         }
     }
+    if (current && current->is_free)
+        return current;
     return NULL;
 }

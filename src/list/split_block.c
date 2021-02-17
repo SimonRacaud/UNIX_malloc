@@ -12,15 +12,19 @@ extern const size_t MIN_DATA_SIZE;
 
 void split_block(block_t *ptr, size_t ptr_new_size)
 {
-    size_t free_size = ptr->size - ptr_new_size;
+    size_t free_size = (ptr->size < ptr_new_size) ? 0 : ptr->size - ptr_new_size;
     size_t new_block_futur_size = lower_pow2(free_size);
     block_t *new;
     
-    if (free_size - BLOCK_SIZE <= 0 || free_size < MIN_CHUNK_SIZE)
+    setvbuf(stdout, NULL, _IONBF, 0); // DEBUG
+    if ((ssize_t)free_size - (ssize_t)BLOCK_SIZE <= 0
+    || free_size < MIN_CHUNK_SIZE)
         return;
     new = (block_t *)(ptr->data + ptr_new_size);
     new->size = free_size - BLOCK_SIZE;
     new->next = ptr->next;
+    //printf("SPLIT f %lu / pns %lu / ps %lu \n", free_size, ptr_new_size, ptr->size); // DEBUG
+    //printf("SPLIT ptr s %lu / next s %lu \n", new->size + BLOCK_SIZE, (new_block_futur_size)); // DEBUG
     if (new->next == NULL)
         listEnd(new);
     else

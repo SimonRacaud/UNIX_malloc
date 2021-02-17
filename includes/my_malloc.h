@@ -29,7 +29,6 @@ typedef struct block
 } __attribute__((packed)) block_t;
 
 #define MIN_CHUNK_SIZE highter_pow2(BLOCK_SIZE + MIN_DATA_SIZE)
-#define HEAP_ALIGN (size_t)(getpagesize() * 2)
 
 // MATH
 size_t highter_pow2(size_t v);
@@ -40,6 +39,7 @@ size_t lower_multiple_of_x(size_t nb, size_t x);
 // List
 void *listHead(void *value);
 void *listEnd(block_t *value);
+size_t heap_align(void);
 
 block_t *add_block(size_t size);
 block_t *extend_heap(block_t *last, size_t size);
@@ -68,5 +68,9 @@ void free(void *addr);
 // REALLOC
 void *realloc(void *ptr, size_t size);
 void *reallocarray(void *ptr, size_t nmemb, size_t size);
+
+/////// DEBUG
+void my_debugDisplay();
+void my_debugDisplayRev(); // TEMP
 
 #endif // !H_MALLOC

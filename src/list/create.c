@@ -37,7 +37,7 @@ block_t *add_block(size_t size)
 block_t *extend_heap(block_t *last, size_t size)
 {
     block_t *ptr = sbrk(0);
-    size_t size_jump = highest_multiple_of_x(BLOCK_SIZE + size, HEAP_ALIGN);
+    size_t size_jump = highest_multiple_of_x(BLOCK_SIZE + size, heap_align());
 
     if (sbrk(size_jump) == SBRK_ERROR) {
         return NULL;

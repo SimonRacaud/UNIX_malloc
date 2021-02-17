@@ -8,17 +8,31 @@
 #include "my_malloc.h"
 
 //////////////////////////////////////////////
-static void debugDisplay() // TEMP
+extern const size_t BLOCK_SIZE;
+void my_debugDisplay() // TEMP
 {
+    setvbuf(stdout, NULL, _IONBF, 0);
     block_t *meta = (block_t *)listHead(NULL);
     size_t i = 0;
-    //block_t *last;
     
-    printf("DEBUG %p\n", listHead(NULL));
+    printf("\nDEBUG %p\n", listHead(NULL));
     for (block_t *ptr = meta; ptr != NULL; ptr = ptr->next) {
-        printf("\tBlock %lu: s(%lu) ss(%lu) is_free(%d)\n", i, ptr->size, ptr->size + 33, ptr->is_free);
+        printf("\tBlock %lu: s(%lu) ss(%lu) is_free(%d)\n", i, ptr->size, ptr->size + BLOCK_SIZE, ptr->is_free);
         i++;
-        //last = ptr;
+    }
+}
+
+void my_debugDisplayRev() // TEMP
+{
+    setvbuf(stdout, NULL, _IONBF, 0);
+    block_t *meta = (block_t *)listEnd(NULL);
+    size_t i = 0;
+    
+    printf("\nDEBUG %p\n", listEnd(NULL));
+    for (block_t *ptr = meta; ptr != NULL; ptr = ptr->prev) {
+        printf("\tBlock %lu: s(%lu) ss(%lu) is_free(%d)\n", i, ptr->size, ptr->size + BLOCK_SIZE, ptr->is_free);
+        i++;
+        //if (i > 20) break;
     }
 }
 
@@ -26,6 +40,10 @@ void free(void *addr)
 {
     block_t *ptr;
     block_t *end = listEnd(NULL);
+    
+    //setbuf(stdout, NULL);
+    //printf("FREE\n");
+    //my_debugDisplayRev();
 
     if (is_valid_addr(addr)) {
         ptr = get_meta_block(addr);
@@ -39,5 +57,7 @@ void free(void *addr)
             try_move_break();
         }
     }
+    //printf("END FREE\n");
+   // my_debugDisplayRev();
+    //printf("END FREE\n");
 }
-

@@ -42,7 +42,7 @@ block_t *fusion_free_blocks(block_t *beg)
     if (is_block_splitable(free_blocks_full_size) == false)
         return beg;
     nb_splitted_block = nb_block_if_splitted(free_blocks_full_size);
-    if (nb_splitted_block >= nb_free_block) {
+    if (nb_splitted_block > nb_free_block) {
         return beg;
     }
     return process_fusion(beg, free_blocks_full_size, nb_splitted_block,

@@ -15,7 +15,9 @@ void *calloc(size_t number, size_t size)
     if (!number || !size || (number != 0 && total_size / number != size)) {
         return NULL;
     }
-    new = malloc(number * size);
+    new = malloc(total_size);
+    //setvbuf(stdout, NULL, _IONBF, 0);
+    //printf("CALLOC %lu\n", total_size);
     if (new) {
         memset(new, 0, total_size);
     }

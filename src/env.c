@@ -25,6 +25,16 @@ void *listEnd(block_t *value)
     return end;
 }
 
+size_t heap_align(void)
+{
+    static size_t align = 0;
+
+    if (align == 0) {
+        align = (getpagesize() * 2);
+    }
+    return align;
+}
+
 const size_t MIN_DATA_SIZE = 1;
 
 const size_t BLOCK_SIZE = sizeof(size_t) + (sizeof(block_t *) * 2)
