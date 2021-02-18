@@ -20,7 +20,7 @@ bool is_valid_addr(void *data_addr)
 
     if (data_addr && head) {
         if (data_addr >= head && data_addr < sbrk(0)) {
-            return (data_addr == 
+            return (data_addr ==
                 (void *)get_meta_block(data_addr) + META_SIZE);
         }
     }

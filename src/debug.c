@@ -46,7 +46,7 @@ void check_break_align(void)
     for (block_t *ptr = meta; ptr != NULL; ptr = ptr->next) {
         size += ptr->size + META_SIZE;
     }
-    printf("DEBUG ALIGN : s %lu ha %lu |  %f \n", size, heap_align(),
+    printf("DEBUG ALIGN : s %lu ha %lu |  %lu \n", size, heap_align(),
         size % heap_align());
     printf("> %lu / %lu \n",
         (size_t)(sbrk(0) - listHead(NULL)) % getpagesize(),

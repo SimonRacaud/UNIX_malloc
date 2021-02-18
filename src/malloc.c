@@ -14,9 +14,6 @@ void *malloc(size_t size)
     block_t *ptr;
     size_t s = highter_pow2(size + META_SIZE) - META_SIZE;
 
-    // setvbuf(stdout, NULL, _IONBF, 0);
-    // printf("MALLOC %lu\n", size);
-    // my_debugDisplay();
     lock_memory();
     if (listHead(NULL)) {
         ptr = add_block(s);
@@ -27,8 +24,6 @@ void *malloc(size_t size)
         listHead(ptr);
     }
     unlock_memory();
-    // printf("END MALLOC ptr->size = %lu\n", ptr ? ptr->size : 0);
-    // my_debugDisplay();
     if (ptr == NULL)
         return NULL;
     return (void *) ptr + META_SIZE;

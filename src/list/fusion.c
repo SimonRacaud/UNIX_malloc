@@ -19,8 +19,6 @@ static block_t *process_fusion(block_t *beg, size_t free_blocks_full_size,
     } else {
         listEnd(beg);
     }
-    // printf("> \t%lu\n", beg->size); // DEBUG
-
     if (nb_splitted_block > 1) {
         split_block(beg, lower_pow2(beg->size + META_SIZE) - META_SIZE);
     }
@@ -47,9 +45,6 @@ block_t *fusion_free_blocks(block_t *beg)
     if (nb_splitted_block > nb_free_block) {
         return beg;
     }
-    // setbuf(stdout, NULL);
-    // printf("# %lu / %lu \n", free_blocks_full_size, nb_splitted_block); //
-    // DEBUG
     return process_fusion(
         beg, free_blocks_full_size, nb_splitted_block, last_free_block);
 }

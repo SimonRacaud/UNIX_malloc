@@ -9,6 +9,7 @@ DSRC	= ./src/
 CC 		= gcc
 
 SRC =	 	$(DSRC)realloc.c		\
+			$(DSRC)realloc_optimise.c \
 			$(DSRC)malloc.c			\
 			$(DSRC)free.c			\
 			$(DSRC)calloc.c			\
@@ -31,8 +32,8 @@ OBJ	=	$(SRC:.c=.o)
 NAME	=	libmy_malloc.so
 NAME_TEST = test_malloc.out
 
-CFLAGS		+= -fPIC -W -Wall -Wextra $(INCLUDE) $(DEBUG) #-Werror
-CXXFLAGS    += $(DEBUG)
+CFLAGS		+= -fPIC -W -Wall -Wextra $(INCLUDE) -Werror
+CXXFLAGS    +=
 DEBUG 	= -g 
 INCLUDE = -I./includes
 

@@ -12,11 +12,6 @@ extern const void *SBRK_ERROR;
 
 static void alloc_in_this_block(block_t *ptr, size_t size)
 {
-    // if ((ptr->size - size) >= MIN_CHUNK_SIZE)
-    //     split_block(ptr, size);
-
-    // setvbuf(stdout, NULL, _IONBF, 0);
-    // printf("## rst %lu / %lu \n", (ptr->size - size), META_SIZE + 32);
     if ((ptr->size - size) >= META_SIZE
         && is_block_splitable(ptr->size - size)) {
         split_block(ptr, size);
@@ -45,8 +40,6 @@ block_t *extend_heap(block_t *last, size_t size)
     block_t *ptr = sbrk(0);
     size_t size_jump = highest_multiple_of_x(META_SIZE + size, heap_align());
 
-    // setvbuf(stdout, NULL, _IONBF, 0);    printf("%lu << %lu \n",
-    // heap_align(), size_jump);
     if (sbrk(size_jump) == SBRK_ERROR) {
         return NULL;
     }

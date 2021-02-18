@@ -12,9 +12,6 @@ void free(void *addr)
     block_t *ptr;
     block_t *end = listEnd(NULL);
 
-    // setbuf(stdout, NULL);
-    // printf("FREE\n");
-    // my_debugDisplayRev();
     if (is_valid_addr(addr)) {
         ptr = get_meta_block(addr);
         ptr->is_free = 1;
@@ -29,7 +26,4 @@ void free(void *addr)
         }
         unlock_memory();
     }
-    // printf("END FREE\n");
-    // my_debugDisplayRev();
-    // printf("END FREE\n");
 }

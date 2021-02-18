@@ -67,13 +67,18 @@ void free(void *addr);
 
 // REALLOC
 void *realloc(void *ptr, size_t size);
+bool have_enough_space_next(block_t *ptr, size_t needed_space);
+void *unchanged_size_alloc(block_t *ptr_meta, void *ptr, size_t size);
+void *lower_size_split(block_t *ptr_meta, void *ptr, size_t size);
+void *fusion_split(block_t *ptr_meta, void *ptr, size_t size);
+
 void *reallocarray(void *ptr, size_t nmemb, size_t size);
 
 // THREAD
 void lock_memory(void);
 void unlock_memory(void);
 
-/////// DEBUG
+// DEBUG
 void my_debugDisplay();
 void my_debugDisplayRev();
 void check_break_align();
