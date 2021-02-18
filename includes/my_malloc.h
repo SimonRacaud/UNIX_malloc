@@ -13,22 +13,22 @@
 #ifndef H_MALLOC
 #define H_MALLOC
 
-#include <stddef.h>
-#include <unistd.h>
-#include <stdio.h>
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
-typedef struct block
-{
-    size_t size;           
-    struct block *next;     
-    struct block *prev;   
+typedef struct block {
+    size_t size;
+    struct block *next;
+    struct block *prev;
     __uint8_t is_free;
 } block_t;
 
 #define MIN_CHUNK_SIZE META_SIZE
-#define DATA(meta_ptr) (void *)meta_ptr + META_SIZE
+#define DATA(meta_ptr) (void *) meta_ptr + META_SIZE
+#define SAFE_SUB(a, b) a < b ? 0 : a - b
 
 // MATH
 size_t highter_pow2(size_t v);
@@ -69,8 +69,13 @@ void free(void *addr);
 void *realloc(void *ptr, size_t size);
 void *reallocarray(void *ptr, size_t nmemb, size_t size);
 
+// THREAD
+void lock_memory(void);
+void unlock_memory(void);
+
 /////// DEBUG
 void my_debugDisplay();
-void my_debugDisplayRev(); // TEMP
+void my_debugDisplayRev();
+void check_break_align();
 
 #endif // !H_MALLOC

@@ -11,29 +11,29 @@ extern const size_t META_SIZE;
 
 void split_block(block_t *ptr, size_t ptr_new_size)
 {
-    size_t free_size = (ptr->size < ptr_new_size) ? 0 : ptr->size - ptr_new_size;
+    size_t free_size = SAFE_SUB(ptr->size, ptr_new_size);
     size_t new_block_futur_size = lower_pow2(free_size);
     block_t *new;
-    
-    //setvbuf(stdout, NULL, _IONBF, 0); // DEBUG
-    if ((ssize_t)free_size - (ssize_t)META_SIZE <= 0
-    || free_size < MIN_CHUNK_SIZE)
-        return;
-    new = (block_t *)(DATA(ptr) + ptr_new_size);
-    new->size = free_size - META_SIZE;
-    new->next = ptr->next;
-    //printf("SPLIT f %lu / pns %lu / ps %lu \n", free_size, ptr_new_size, ptr->size); // DEBUG
-    //printf("SPLIT ptr s %lu / next s %lu \n", new->size + META_SIZE, (new_block_futur_size)); // DEBUG
-    if (new->next == NULL)
-        listEnd(new);
-    else
-        new->next->prev = new;
-    new->prev = ptr;
-    new->is_free = 1;
-    ptr->size = ptr_new_size;
-    ptr->next = new;
-    if (free_size - new_block_futur_size >= MIN_CHUNK_SIZE) {
-        split_block(new, (new_block_futur_size - META_SIZE));
+
+    // setvbuf(stdout, NULL, _IONBF, 0); // DEBUG
+    if (free_size >= MIN_CHUNK_SIZE) {
+        new = (block_t *) (DATA(ptr) + ptr_new_size);
+        new->size = free_size - META_SIZE;
+        new->next = ptr->next;
+        // printf("SPLIT f %lu / pns %lu / ps %lu \n", free_size, ptr_new_size,
+        // ptr->size); // DEBUG printf("SPLIT ptr s %lu / next s %lu \n",
+        // new->size + META_SIZE, (new_block_futur_size)); // DEBUG
+        if (new->next == NULL)
+            listEnd(new);
+        else
+            new->next->prev = new;
+        new->prev = ptr;
+        new->is_free = 1;
+        ptr->size = ptr_new_size;
+        ptr->next = new;
+        if (SAFE_SUB(free_size, new_block_futur_size) >= MIN_CHUNK_SIZE) {
+            split_block(new, (new_block_futur_size - META_SIZE));
+        }
     }
 }
 

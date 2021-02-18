@@ -7,19 +7,18 @@
 
 #include "my_malloc.h"
 
-void *calloc(size_t number, size_t size)
-{
-    size_t *new;
-    size_t total_size = number * size;
+void *calloc(size_t number, size_t size) {
+  size_t *new;
+  size_t total_size = number * size;
 
-    if (!number || !size || (number != 0 && total_size / number != size)) {
-        return NULL;
-    }
-    new = malloc(total_size);
-    //setvbuf(stdout, NULL, _IONBF, 0);
-    //printf("CALLOC %lu\n", total_size);
-    if (new) {
-        memset(new, 0, total_size);
-    }
-    return new;
+  if (!number || !size || (number != 0 && total_size / number != size)) {
+    return NULL;
+  }
+  new = malloc(total_size);
+  // setvbuf(stdout, NULL, _IONBF, 0);
+  // printf("CALLOC %lu\n", total_size);
+  if (new) {
+    memset(new, 0, total_size);
+  }
+  return new;
 }

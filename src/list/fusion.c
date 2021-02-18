@@ -10,7 +10,7 @@
 extern const size_t META_SIZE;
 
 static block_t *process_fusion(block_t *beg, size_t free_blocks_full_size,
-size_t nb_splitted_block, block_t *last_free_block)
+    size_t nb_splitted_block, block_t *last_free_block)
 {
     beg->size = free_blocks_full_size - META_SIZE;
     beg->next = last_free_block->next;
@@ -19,6 +19,8 @@ size_t nb_splitted_block, block_t *last_free_block)
     } else {
         listEnd(beg);
     }
+    // printf("> \t%lu\n", beg->size); // DEBUG
+
     if (nb_splitted_block > 1) {
         split_block(beg, lower_pow2(beg->size + META_SIZE) - META_SIZE);
     }
@@ -32,8 +34,8 @@ block_t *fusion_free_blocks(block_t *beg)
     block_t *last_free_block;
     size_t nb_splitted_block;
 
-    for (block_t *ptr = beg->next; ptr != NULL; ptr = ptr->next) {
-        if (!ptr->is_free)
+    for (block_t *ptr = beg->next; ptr; ptr = ptr->next) {
+        if (!ptr || !ptr->is_free)
             break;
         nb_free_block++;
         free_blocks_full_size += ptr->size + META_SIZE;
@@ -45,6 +47,9 @@ block_t *fusion_free_blocks(block_t *beg)
     if (nb_splitted_block > nb_free_block) {
         return beg;
     }
-    return process_fusion(beg, free_blocks_full_size, nb_splitted_block,
-        last_free_block);
+    // setbuf(stdout, NULL);
+    // printf("# %lu / %lu \n", free_blocks_full_size, nb_splitted_block); //
+    // DEBUG
+    return process_fusion(
+        beg, free_blocks_full_size, nb_splitted_block, last_free_block);
 }

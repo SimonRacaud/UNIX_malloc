@@ -33,20 +33,13 @@ block_t *find_best_match(block_t **last, size_t size)
 
 block_t *get_first_prev_free_block(block_t *current, size_t *full_size)
 {
-    block_t *prev;
-
-    if (full_size && current && current->is_free) {
-        *full_size += current->size + META_SIZE;
-    }
-    if (current && current->prev && current->prev->is_free) {
-        prev = get_first_prev_free_block(current->prev, full_size);
-        if (prev == NULL) {
-            return current;
-        } else {
-            return prev;
+    for (block_t *p = current; p; p = p->prev) {
+        if (full_size && p && p->is_free) {
+            *full_size += p->size + META_SIZE;
+        }
+        if (!p->prev || !p->prev->is_free) {
+            return p;
         }
     }
-    if (current && current->is_free)
-        return current;
-    return NULL;
+    return current;
 }

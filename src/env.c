@@ -7,6 +7,10 @@
 
 #include "my_malloc.h"
 
+const size_t META_SIZE = sizeof(block_t);
+
+const void *SBRK_ERROR = (void *) (-1);
+
 void *listHead(void *value)
 {
     static void *head = NULL;
@@ -34,7 +38,3 @@ size_t heap_align(void)
     }
     return align;
 }
-
-const size_t META_SIZE = sizeof(block_t);
-
-const void *SBRK_ERROR = (void *)(-1);

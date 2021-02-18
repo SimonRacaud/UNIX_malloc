@@ -5,8 +5,8 @@
 ** math.c, Thursday, 1st January 1970 1:00:00 am simon.racaud@epitech.eu
 */
 
-#include "my_malloc.h"
 #include <math.h>
+#include "my_malloc.h"
 
 size_t highter_pow2(size_t v)
 {
@@ -20,11 +20,11 @@ size_t highter_pow2(size_t v)
     return v;
 }
 
-size_t lower_pow2(size_t n) 
+size_t lower_pow2(size_t n)
 {
-    size_t p = (size_t)log2(n); 
+    size_t p = (size_t) log2(n);
 
-    return (size_t)pow(2, p);
+    return (size_t) pow(2, p);
 }
 
 size_t highest_multiple_of_x(size_t n, size_t x)

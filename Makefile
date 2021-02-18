@@ -20,6 +20,8 @@ SRC =	 	$(DSRC)realloc.c		\
 			$(DSRC)list/fusion.c		\
 			$(DSRC)list/move_break.c	\
 			$(DSRC)list/utility.c		\
+			$(DSRC)debug.c				\
+			$(DSRC)thread.c				\
 
 SRC_UT = ./tests/tests_malloc.c \
 		$(SRC_MAIN)
