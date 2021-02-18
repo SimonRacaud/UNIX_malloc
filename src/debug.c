@@ -9,13 +9,13 @@
 
 extern const size_t META_SIZE;
 
-void my_debugDisplay(void)
+void my_debug_display(void)
 {
-    block_t *meta = (block_t *) listHead(NULL);
+    block_t *meta = (block_t *) list_head(NULL);
     size_t i = 0;
 
     setvbuf(stdout, NULL, _IONBF, 0);
-    printf("\nDEBUG %p\n", listHead(NULL));
+    printf("\nDEBUG %p\n", list_head(NULL));
     for (block_t *ptr = meta; ptr != NULL; ptr = ptr->next) {
         printf("\tBlock %lu: s(%lu) ss(%lu) is_free(%d)\n", i, ptr->size,
             ptr->size + META_SIZE, ptr->is_free);
@@ -23,13 +23,13 @@ void my_debugDisplay(void)
     }
 }
 
-void my_debugDisplayRev(void)
+void my_debug_display_rev(void)
 {
-    block_t *meta = (block_t *) listEnd(NULL);
+    block_t *meta = (block_t *) list_end(NULL);
     size_t i = 0;
 
     setvbuf(stdout, NULL, _IONBF, 0);
-    printf("\nDEBUG %p\n", listEnd(NULL));
+    printf("\nDEBUG %p\n", list_end(NULL));
     for (block_t *ptr = meta; ptr != NULL; ptr = ptr->prev) {
         printf("\tBlock %lu: s(%lu) ss(%lu) is_free(%d)\n", i, ptr->size,
             ptr->size + META_SIZE, ptr->is_free);
@@ -39,7 +39,7 @@ void my_debugDisplayRev(void)
 
 void check_break_align(void)
 {
-    block_t *meta = (block_t *) listHead(NULL);
+    block_t *meta = (block_t *) list_head(NULL);
     size_t size = 0;
 
     setvbuf(stdout, NULL, _IONBF, 0);
@@ -49,6 +49,6 @@ void check_break_align(void)
     printf("DEBUG ALIGN : s %lu ha %lu |  %lu \n", size, heap_align(),
         size % heap_align());
     printf("> %lu / %lu \n",
-        (size_t)(sbrk(0) - listHead(NULL)) % getpagesize(),
-        (size_t)(sbrk(0) - listHead(NULL)));
+        (size_t)(sbrk(0) - list_head(NULL)) % getpagesize(),
+        (size_t)(sbrk(0) - list_head(NULL)));
 }

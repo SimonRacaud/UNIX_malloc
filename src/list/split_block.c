@@ -20,7 +20,7 @@ void split_block(block_t *ptr, size_t ptr_new_size)
         new->size = free_size - META_SIZE;
         new->next = ptr->next;
         if (new->next == NULL)
-            listEnd(new);
+            list_end(new);
         else
             new->next->prev = new;
         new->prev = ptr;

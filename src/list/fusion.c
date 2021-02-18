@@ -17,7 +17,7 @@ static block_t *process_fusion(block_t *beg, size_t free_blocks_full_size,
     if (beg->next) {
         beg->next->prev = beg;
     } else {
-        listEnd(beg);
+        list_end(beg);
     }
     if (nb_splitted_block > 1) {
         split_block(beg, lower_pow2(beg->size + META_SIZE) - META_SIZE);

@@ -11,16 +11,15 @@ extern const size_t META_SIZE;
 
 block_t *find_best_match(block_t **last, size_t size)
 {
-    block_t *ptr = listHead(NULL);
+    block_t *ptr = list_head(NULL);
     block_t *best_ptr = NULL;
 
     while (ptr) {
-        if (ptr->is_free && ptr->size >= size) {
-            if (best_ptr == NULL) {
-                best_ptr = ptr;
-            } else if (best_ptr->size > ptr->size) {
-                best_ptr = ptr;
-            }
+        if (ptr->is_free && ptr->size >= size && best_ptr == NULL) {
+            best_ptr = ptr;
+        } else if (ptr->is_free && ptr->size >= size
+            && best_ptr->size > ptr->size) {
+            best_ptr = ptr;
         }
         *last = ptr;
         ptr = ptr->next;

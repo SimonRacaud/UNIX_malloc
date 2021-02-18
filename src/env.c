@@ -11,7 +11,7 @@ const size_t META_SIZE = sizeof(block_t);
 
 const void *SBRK_ERROR = (void *) (-1);
 
-void *listHead(void *value)
+void *list_head(void *value)
 {
     static void *head = NULL;
 
@@ -20,7 +20,7 @@ void *listHead(void *value)
     return head;
 }
 
-void *listEnd(block_t *value)
+void *list_end(block_t *value)
 {
     static block_t *end = NULL;
 

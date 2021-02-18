@@ -15,13 +15,13 @@ void *malloc(size_t size)
     size_t s = highter_pow2(size + META_SIZE) - META_SIZE;
 
     lock_memory();
-    if (listHead(NULL)) {
+    if (list_head(NULL)) {
         ptr = add_block(s);
     } else {
         ptr = extend_heap(NULL, s);
         if (!ptr)
             return NULL;
-        listHead(ptr);
+        list_head(ptr);
     }
     unlock_memory();
     if (ptr == NULL)

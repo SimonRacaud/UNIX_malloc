@@ -22,7 +22,7 @@ static void alloc_in_this_block(block_t *ptr, size_t size)
 block_t *add_block(size_t size)
 {
     block_t *ptr;
-    block_t *last = listEnd(NULL);
+    block_t *last = list_end(NULL);
 
     ptr = find_best_match(&last, size);
     if (ptr) {
@@ -50,7 +50,7 @@ block_t *extend_heap(block_t *last, size_t size)
     }
     ptr->prev = last;
     ptr->is_free = 0;
-    listEnd(ptr);
+    list_end(ptr);
     if ((size_jump - (META_SIZE + size)) >= MIN_CHUNK_SIZE) {
         split_block(ptr, size);
     }

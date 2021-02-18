@@ -21,7 +21,7 @@ static bool move_break_and_split(size_t full_size, block_t *ptr)
         return false;
     ptr->size = free_size - META_SIZE;
     ptr->next = NULL;
-    listEnd(ptr);
+    list_end(ptr);
     brk((void *) ptr + free_size);
     if (free_size_pow2 != (size_t) free_size) {
         split_block(ptr, lower_pow2(free_size) - META_SIZE);
@@ -36,14 +36,14 @@ static void move_break(block_t *ptr)
     if (ptr->prev)
         ptr->prev->next = NULL;
     brk(ptr);
-    listEnd(last);
+    list_end(last);
 }
 
 void try_move_break(void)
 {
     size_t free_size = 0;
     block_t *first_free_block =
-        get_first_prev_free_block(listEnd(NULL), &free_size);
+        get_first_prev_free_block(list_end(NULL), &free_size);
 
     if (!first_free_block || free_size < heap_align())
         return;

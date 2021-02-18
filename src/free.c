@@ -10,7 +10,7 @@
 void free(void *addr)
 {
     block_t *ptr;
-    block_t *end = listEnd(NULL);
+    block_t *end = list_end(NULL);
 
     if (is_valid_addr(addr)) {
         ptr = get_meta_block(addr);

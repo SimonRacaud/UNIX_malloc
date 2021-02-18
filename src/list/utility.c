@@ -16,7 +16,7 @@ block_t *get_meta_block(void *addr)
 
 bool is_valid_addr(void *data_addr)
 {
-    void *head = listHead(NULL);
+    void *head = list_head(NULL);
 
     if (data_addr && head) {
         if (data_addr >= head && data_addr < sbrk(0)) {
