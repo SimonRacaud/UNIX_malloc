@@ -1,7 +1,7 @@
 # UNIX_malloc
 Rewriting of unix memory allocation functions
 
-Using only brk/sbrk, rewrite the 5 following C library functions: malloc, calloc, realloc, reallocarray and free.
+Using only __brk__ and __sbrk__, rewrite the 5 following C library functions: malloc, calloc, realloc, reallocarray and free.
 
 ```
   void *malloc(size_t size);
